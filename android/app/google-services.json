@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "332078150013",
+    "project_id": "yapter-11151",
+    "storage_bucket": "yapter-11151.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332078150013:android:cc6c8f8e84ce915865dc14",
+        "android_client_info": {
+          "package_name": "com.example.yapter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9nbSUryW-YA2_i47R3lg8G_RLmU_mvBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
