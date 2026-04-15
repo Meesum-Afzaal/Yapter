@@ -1,6 +1,7 @@
-class User{
+class UserDetails{
+    final String? uid;
     String? firstName;
     String? lastName;
     String? phoneNumber;
-    User({required this.firstName,required this.lastName,required this.phoneNumber});
+    UserDetails({this.uid,this.firstName,this.lastName,this.phoneNumber});
 }

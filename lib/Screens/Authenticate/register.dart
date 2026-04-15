@@ -1,8 +1,12 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yapter/Designs/flutter_neumorphic_button.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
+import 'package:yapter/Models/user.dart';
+import 'package:yapter/Providers/userProvider.dart';
 import 'package:yapter/Screens/Authenticate/verify.dart';
+import 'package:yapter/Services/auth.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -13,6 +17,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   Color baseColor = Color(0xFFE0E0E0);
+  final Auth _auth=Auth();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final _focusNode = FocusNode();
   final _focusNode2 = FocusNode();
@@ -21,13 +26,16 @@ class _RegisterState extends State<Register> {
   final controller2 = TextEditingController();
   final controller3 = TextEditingController();
   IsoCode code = IsoCode.PK;
-  String number='';
 
   String errorText = '';
   String errorText2 = '';
   bool isPressed = false;
-  String firstName="";
-  String lastName="";
+
+  String? firstName;
+  String? lastName;
+  String number="";
+
+
 
 
   @override
@@ -49,8 +57,10 @@ class _RegisterState extends State<Register> {
   void dispose() {
     _focusNode.dispose();
     _focusNode2.dispose();
+    _focusNode3.dispose();
     controller1.dispose();
     controller2.dispose();
+    controller3.dispose();
     super.dispose();
   }
 
@@ -128,10 +138,13 @@ class _RegisterState extends State<Register> {
                                 border: InputBorder.none,
                               ),
                               validator: (val) {
-                                if (val!.isEmpty) {
+                                if (val==null||val.isEmpty) {
                                   errorText = "First Name is required!";
                                 }
                                 return null;
+                              },
+                              onSaved: (val){
+                                firstName=val;
                               },
                             ),
                           ),
@@ -163,10 +176,13 @@ class _RegisterState extends State<Register> {
                                 
                               ),
                               validator: (val) {
-                                if (val!.isEmpty) {
+                                if (val==null||val.isEmpty) {
                                   errorText2 = "Last Name is required!";
                                 }
                                 return null;
+                              },
+                              onSaved: (val){
+                                lastName=val;
                               },
                             ),
                           ),
@@ -263,18 +279,25 @@ class _RegisterState extends State<Register> {
                           isPressed: isPressed,
                           child: ElevatedButton(
                             onPressed: () async {
-                              setState(() {
-                                isPressed = true;
-                              });
-                              await Future.delayed(Duration(milliseconds: 200));
-                              setState(() {
-                                isPressed = false;
-                              });
-                              //if (formKey.currentState!.validate()) {
-                              //   formKey.currentState!.save();
-                              //
-                              // }
-                              Navigator.push(context,MaterialPageRoute(builder: (context)=>VerifyOTP()));
+
+                              if (formKey.currentState!.validate()) {
+                                formKey.currentState!.save();
+                                print(number);
+
+                                dynamic result=await _auth.verifyOTP(number);
+                                if(result!=null) {
+                                  print(firstName);
+                                  print(lastName);
+                                  print(number);
+
+                                    Navigator.push(context, MaterialPageRoute(
+                                        builder: (context) =>
+                                            VerifyOTP(verificationId: result,phoneNumber: number,firstName: firstName!,lastName: lastName!)));
+
+                                }
+
+                              }
+
 
 
                             },

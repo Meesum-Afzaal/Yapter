@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:yapter/Models/user.dart';
 
 class Auth {
   String? verificationIdtemp;
-
   FirebaseAuth auth = FirebaseAuth.instance;
 
 
-  Future<void> verifyOTP(String phoneNumber)async{
+  Future verifyOTP(String phoneNumber)async{
     await auth.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential)async{
@@ -22,15 +22,38 @@ class Auth {
       },
       codeAutoRetrievalTimeout: (String verificationId){},
     );
+    return  verificationIdtemp;
+
+
   }
 
-  Future<void> signInWithOTP(String verificationId,String otpPin)async{
+  Future<String> signInWithOTP(String verificationId,String otpPin)async{
     try{
       PhoneAuthCredential credential=await PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otpPin);
-      await auth.signInWithCredential(credential);
+      UserCredential result = await auth.signInWithCredential(credential);
+      String uid =result.user!.uid;
+      return uid;
+    }
+    catch(e){
+      return e.toString();
+    }
+  }
+  Stream<UserDetails?> get user{
+    return auth.authStateChanges().map((firebaseuser){
+      if(firebaseuser==null){
+        return null;
+      }
+      return UserDetails(uid: firebaseuser.uid);
+
+    });
+  }
+  Future<void> signOut()async{
+    try{
+      await auth.signOut();
     }
     catch(e){
       print(e.toString());
+
     }
   }
 

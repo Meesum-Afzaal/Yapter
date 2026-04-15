@@ -1,26 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
 import 'package:yapter/Designs/flutter_neumorphic_button.dart';
+import 'package:yapter/Models/user.dart';
+import 'package:yapter/Providers/userProvider.dart';
+import 'package:yapter/Services/auth.dart';
 
 
-class VerifyOTP extends StatefulWidget {
-  const VerifyOTP({super.key});
+class VerifyOTP extends ConsumerStatefulWidget {
+  final String verificationId;
+  final String phoneNumber;
+  final String firstName;
+  final String lastName;
+  const VerifyOTP({super.key,required this.verificationId,required this.phoneNumber,required this.firstName,required this.lastName});
 
   @override
-  State<VerifyOTP> createState() => _VerifyOTPState();
+  ConsumerState<VerifyOTP> createState() => _VerifyOTPState();
 }
 
-class _VerifyOTPState extends State<VerifyOTP> {
+class _VerifyOTPState extends ConsumerState<VerifyOTP> {
   Color baseColor = Color(0xFFE0E0E0);
   final controller=TextEditingController();
   final formKey=GlobalKey<FormState>();
   String? errorText;
   bool isPressed = false;
   bool isPressed2 = false;
-  String Pin="";
+  String pin="";
+  final Auth _auth=Auth();
 
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       backgroundColor: baseColor,
       appBar: AppBar(
@@ -37,7 +48,7 @@ class _VerifyOTPState extends State<VerifyOTP> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Hello Meesum,",
+                "Hello ${widget.firstName},",
                 style: TextStyle(
                   fontSize:30,
                   color: Colors.grey.shade800,
@@ -46,14 +57,13 @@ class _VerifyOTPState extends State<VerifyOTP> {
               ),
               SizedBox(height: 6.0,),
               Text(
-                "We've sent a verification code to your number +923001234567. Please enter the OTP below to verify your account.",
+                "We've sent a verification code to your number ${widget.phoneNumber}. Please enter the OTP below to verify your account.",
                 style: TextStyle(
                     fontSize:15.0,
                     color: Colors.grey.shade800,
                 ),
               ),
               SizedBox(height: 40,),
-
               Form(
                 key: formKey,
                 child: Pinput.builder(
@@ -61,8 +71,8 @@ class _VerifyOTPState extends State<VerifyOTP> {
                     autofocus: true,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   controller: controller,
-                  onCompleted:(pin){
-                      Pin=pin;
+                  onCompleted:(pinS){
+                      pin=pinS;
                   },
 
                   length: 6,
@@ -148,14 +158,19 @@ class _VerifyOTPState extends State<VerifyOTP> {
                     isPressed: isPressed2,
                     child: ElevatedButton(
                       onPressed: () async {
-                        setState(() {
-                          isPressed2 = true;
-                        });
-                        await Future.delayed(Duration(milliseconds: 200));
-                        setState(() {
-                          isPressed2 = false;
-                        });
+                        
                         if (formKey.currentState!.validate()) {
+                          formKey.currentState!.save();
+                          final result = await _auth.signInWithOTP(widget.verificationId, pin);
+                          ref.read(userNotifierProvider.notifier).setUser(UserDetails(uid: result,firstName: widget.firstName,lastName: widget.lastName,phoneNumber: widget.phoneNumber));
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          
+                          
+                          
+
+
+
+
 
 
                         }
