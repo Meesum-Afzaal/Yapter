@@ -16,7 +16,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  Color baseColor = Color(0xFFE0E0E0);
+  Color baseColor = Color(0xFFE6EBF2);
   final Auth _auth=Auth();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final _focusNode = FocusNode();

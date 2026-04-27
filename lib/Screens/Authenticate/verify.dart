@@ -19,7 +19,7 @@ class VerifyOTP extends ConsumerStatefulWidget {
 }
 
 class _VerifyOTPState extends ConsumerState<VerifyOTP> {
-  Color baseColor = Color(0xFFE0E0E0);
+  Color baseColor = Color(0xFFE6EBF2);
   final controller=TextEditingController();
   final formKey=GlobalKey<FormState>();
   String? errorText;

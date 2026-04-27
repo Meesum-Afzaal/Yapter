@@ -108,18 +108,18 @@ class _MyBoxPainter extends BoxPainter {
 
     final RRect rrect = resolved.toRRect(rect);
 
-    // Draw outer shadows
+    // 🌑 Draw outer shadows
     for (final shadow in decoration.boxShadow) {
       if (!shadow.inset) {
         _drawOuterShadow(canvas, rrect, shadow);
       }
     }
 
-    // Fill color
+    // 🎨 Fill color
     final Paint fillPaint = Paint()..color = decoration.color;
     canvas.drawRRect(rrect, fillPaint);
 
-    // Draw inset shadows
+    // 🌒 Draw inset shadows
     for (final shadow in decoration.boxShadow) {
       if (shadow.inset) {
         _drawInsetShadow(canvas, rect, rrect, shadow);
@@ -127,15 +127,20 @@ class _MyBoxPainter extends BoxPainter {
     }
   }
 
+  /// =======================
+  /// Outer Shadow (Improved)
+  /// =======================
   void _drawOuterShadow(Canvas canvas, RRect rrect, MyBoxShadow shadow) {
+    final double blurSigma = _convertRadiusToSigma(shadow.blurRadius);
+
     final Paint paint = Paint()
       ..color = shadow.color
-      ..maskFilter = MaskFilter.blur(
-        BlurStyle.normal,
-        _convertRadiusToSigma(shadow.blurRadius),
-      );
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
 
-    final RRect spreadRRect = rrect.inflate(shadow.spreadRadius);
+    // 🔥 Controlled spread (prevents bloated edges)
+    final double adjustedSpread = shadow.spreadRadius * 0.5;
+
+    final RRect spreadRRect = rrect.inflate(adjustedSpread);
 
     canvas.drawRRect(
       spreadRRect.shift(shadow.offset),
@@ -143,6 +148,9 @@ class _MyBoxPainter extends BoxPainter {
     );
   }
 
+  /// =======================
+  /// Inset Shadow (Improved)
+  /// =======================
   void _drawInsetShadow(
       Canvas canvas,
       Rect rect,
@@ -151,8 +159,9 @@ class _MyBoxPainter extends BoxPainter {
       ) {
     final double blurSigma = _convertRadiusToSigma(shadow.blurRadius);
 
+    // 🔥 Softer inner spread
     final RRect outer =
-    rrect.inflate(shadow.spreadRadius).shift(shadow.offset);
+    rrect.inflate(shadow.spreadRadius * 0.6).shift(shadow.offset);
 
     final Path outerPath = Path()..addRRect(outer);
     final Path innerPath = Path()..addRRect(rrect);
@@ -161,7 +170,7 @@ class _MyBoxPainter extends BoxPainter {
     Path.combine(PathOperation.difference, outerPath, innerPath);
 
     final Paint paint = Paint()
-      ..color = shadow.color
+      ..color = shadow.color.withOpacity(0.85)
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
 
     canvas.save();
@@ -170,7 +179,11 @@ class _MyBoxPainter extends BoxPainter {
     canvas.restore();
   }
 
+  /// =======================
+  /// Blur Tuning (Key Fix)
+  /// =======================
   double _convertRadiusToSigma(double radius) {
-    return radius * 0.57735 + 0.5;
+    // smoother, more natural blur curve
+    return radius * 0.4 + 0.6;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yapter/Providers/userProvider.dart';
 import 'package:yapter/Screens/Authenticate/register.dart';
+import 'package:yapter/Screens/bottomNavBar.dart';
 import 'package:yapter/Screens/Home/home.dart';
 class Wrapper extends ConsumerWidget {
   const Wrapper({super.key});
@@ -14,7 +15,7 @@ class Wrapper extends ConsumerWidget {
         return Register();
       }
       else{
-        return Home();
+        return BottomNavBar();
       }
     }, error: (e,_)=>Text(e.toString()),
         loading: ()=>Center(child: CircularProgressIndicator()));

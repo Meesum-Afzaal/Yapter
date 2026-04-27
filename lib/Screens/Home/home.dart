@@ -18,30 +18,25 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     final users = ref.watch(userProvider);
-    Color baseColor = Color(0xFFE0E0E0);
+    Color baseColor = Color(0xFFE6EBF2);
     final onlineUsers=users.where((user) => user.isOnline).toList();
     return Scaffold(
       backgroundColor: baseColor,
+
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             backgroundColor: baseColor,
 
             expandedHeight: 235,
-           actions: [
-             IconButton(onPressed: (){
-               auth.signOut();},
-                 icon: Icon(Icons.logout,color: Colors.grey.shade800,),
-             )
-           ],
+         
 
-           pinned: true,
             title: Text("Yapter",style: TextStyle(color: Colors.grey.shade800 ,fontWeight: FontWeight.bold),),
             centerTitle: true,
             flexibleSpace: FlexibleSpaceBar(
               background:     Container(
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100
+                  color:baseColor
                   
                 ),
                 child: Padding(
@@ -66,16 +61,13 @@ class _HomeState extends ConsumerState<Home> {
                           itemCount: onlineUsers.length,
                             itemBuilder: (context,index){
                           return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Column(
-
-
                               children: [
                                 Stack(
-
                                   children: [
                                     CircleAvatar(
-                                      radius: 35,
+                                      radius: 38,
                                       backgroundImage: NetworkImage(onlineUsers[index].image),
 
                                     ),
@@ -96,7 +88,7 @@ class _HomeState extends ConsumerState<Home> {
                                   ],
                                 ),
                                 SizedBox(height: 5,),
-                                Text(onlineUsers[index].name,style: TextStyle(color: Colors.grey.shade800,fontSize: 10,fontWeight: FontWeight.bold),)
+                                Text(onlineUsers[index].name,style: TextStyle(color: Colors.grey.shade800,fontSize: 11,fontWeight: FontWeight.bold),)
                               ],
 
                             ),
@@ -114,11 +106,21 @@ class _HomeState extends ConsumerState<Home> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: baseColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 10,
+                        spreadRadius: -8,
+                        offset: Offset(0, -12),
+
+                      )
+                    ],
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(70),
                       topRight: Radius.circular(70),
 
                     ),
+
 
                   ),
                   child: Container(
@@ -152,7 +154,7 @@ class _HomeState extends ConsumerState<Home> {
                 return SizeTransition(
                   sizeFactor: animation,
                       child: Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+                            padding: const EdgeInsets.fromLTRB(25, 18, 25, 18),
                             child: NeumorphicButton(
                               backgroundColor: baseColor,
                               height: 70,
@@ -165,14 +167,14 @@ class _HomeState extends ConsumerState<Home> {
                                   leading: CircleAvatar(
                                     backgroundImage: NetworkImage(users[index].image),
                                   ),
-                                  title: Text(users[index].name),
-                                  subtitle: Text("Hello, how are you?"),
+                                  title: Text(users[index].name,style: TextStyle(color: Colors.grey.shade800,fontSize: 16.0,fontWeight: FontWeight.bold)),
+                                  subtitle: Text("Hello, how are you?",style: TextStyle(color: Colors.grey.shade800,fontSize: 14.0),),
                                   trailing: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text("12:00",style: TextStyle(color: Colors.grey.shade800,fontSize: 12.0)),
                                       SizedBox(height: 5,),
-                                      Icon(Icons.done_all,size: 20,)
+                                      Icon(Icons.done_all,size: 20,color: Colors.blue,)
                                     ],
                                   )
 

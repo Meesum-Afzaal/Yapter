@@ -33,7 +33,7 @@ class _NeumorphicButtonState extends State<NeumorphicButton> {
   Widget build(BuildContext context) {
     bool isPressed = widget.isPressed ?? false;
 
-    final offset = isPressed ? const Offset(8, 8):const Offset(6,6) ;
+    final offset = isPressed ? const Offset(10, 10):const Offset(8,8) ;
 
     return  AnimatedContainer(
         duration: Duration(milliseconds: 200),
@@ -47,16 +47,19 @@ class _NeumorphicButtonState extends State<NeumorphicButton> {
           boxShadow: [
             MyBoxShadow(
               offset: -offset,
-              color: isPressed ?   Colors.grey.shade400:Colors.white,
-              blurRadius: isPressed ? 8:10,
+              color: isPressed ?   Colors.grey.shade400:Colors.white.withOpacity(0.7),
+              spreadRadius: -2,
+              blurRadius: isPressed ? 10:12,
               inset: isPressed ? true : false,
 
             ),
             MyBoxShadow(
               offset:offset,
               color: isPressed ? Colors.white :Colors.grey.shade400,
-              blurRadius: isPressed ?  8:10 ,
+              spreadRadius: -2,
+              blurRadius: isPressed ?  10:12 ,
               inset: isPressed ? true : false,
+
 
             ),
           ],
