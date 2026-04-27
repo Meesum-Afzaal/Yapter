@@ -92,25 +92,30 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                     },
 
                     builder: (context, pin){
-                  return NeumorphicButton(
-                        height: 55,
-                        width: 55,
-                        borderRadius: BorderRadius.circular(20),
-                        isPressed: pin.index<controller.text.length ,
-                        backgroundColor: baseColor,
-                        child: Center(
-                          child:Text(
-                            pin.value,
-                            style: TextStyle(
-                              color: Colors.grey.shade800,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      NeumorphicButton(
+                            height: 45,
+                            width: 45,
+
+                            isPressed: pin.index<controller.text.length ,
+                            backgroundColor: baseColor,
+                            child: Center(
+                              child:Text(
+                                pin.value,
+                                style: TextStyle(
+                                  color: Colors.grey.shade800,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18.0
+                                ),
+
+                              ),
                             ),
 
-                          ),
-                        ),
 
-
+                      ),
+                    ],
                   );
 
                 }),
