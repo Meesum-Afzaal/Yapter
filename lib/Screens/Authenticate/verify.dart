@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
-import 'package:yapter/Designs/flutter_neumorphic_button.dart';
+import 'package:yapter/Designs/flutterNeumorphic_button.dart';
 import 'package:yapter/Models/user.dart';
+import 'package:yapter/Providers/firestore_service_provider.dart';
 import 'package:yapter/Providers/userProvider.dart';
 import 'package:yapter/Services/auth.dart';
 
@@ -30,6 +31,7 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
 
   @override
   Widget build(BuildContext context) {
+    final firestoreservice=ref.read(firestoreServiceProvider);
 
 
     return Scaffold(
@@ -38,7 +40,7 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
         title: Text("OTP Verification",style: TextStyle(fontSize: 18.0,color: Colors.grey.shade800,fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: baseColor,
-        leading: BackButton(color: Colors.grey.shade800,),
+        leading: BackButton(),
       ),
       body:
       SafeArea(
@@ -167,8 +169,11 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           final result = await _auth.signInWithOTP(widget.verificationId, pin);
-                          ref.read(userNotifierProvider.notifier).setUser(UserDetails(uid: result,firstName: widget.firstName,lastName: widget.lastName,phoneNumber: widget.phoneNumber));
+                          await firestoreservice.addUser(result, widget.firstName, widget.lastName, widget.phoneNumber);
                           Navigator.popUntil(context, (route) => route.isFirst);
+
+                          //ref.read(userNotifierProvider.notifier).setUser(UserDetails(uid: result,firstName: widget.firstName,lastName: widget.lastName,phoneNumber: widget.phoneNumber));
+
                           
                           
                           

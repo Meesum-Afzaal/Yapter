@@ -31,6 +31,9 @@ class Auth {
     try{
       PhoneAuthCredential credential=await PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otpPin);
       UserCredential result = await auth.signInWithCredential(credential);
+      if (result.user == null) {
+        throw Exception("User sign-in failed: No user found.");
+      }
       String uid =result.user!.uid;
       return uid;
     }
@@ -52,7 +55,7 @@ class Auth {
       await auth.signOut();
     }
     catch(e){
-      print(e.toString());
+     ;
 
     }
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yapter/Designs/flutter_neumorphic_button.dart';
+import 'package:yapter/Designs/flutterNeumorphic_button.dart';
 import 'package:yapter/Services/auth.dart';
 import 'package:yapter/temp/tempUsers.dart';
 
@@ -29,6 +29,11 @@ class _HomeState extends ConsumerState<Home> {
             backgroundColor: baseColor,
 
             expandedHeight: 235,
+            actions: [
+              IconButton(onPressed: (){
+                auth.signOut();
+              }, icon: Icon(Icons.logout,color: Colors.grey.shade800,))
+            ],
          
 
             title: Text("Yapter",style: TextStyle(color: Colors.grey.shade800 ,fontWeight: FontWeight.bold),),
