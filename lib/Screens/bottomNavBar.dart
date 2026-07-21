@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yapter/Designs/flutterNeumorphic_button.dart';
 import 'package:yapter/Screens/Home/home.dart';
 import 'package:yapter/Screens/Profile/profile.dart';
-import 'package:yapter/Screens/notifications/notifications.dart';
+import 'package:yapter/Screens/AddFriend/add_friend.dart';
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
 
@@ -15,7 +15,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int index=0;
   List<Widget> screens=[
     Home(),
-    Notifications(),
+    AddFriend(),
     Profile()
   ];
   @override
@@ -53,7 +53,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   width: 60,
                   isPressed: index==1,
                   backgroundColor:baseColor ,
-                  child:Icon(Icons.notifications_none,color: Colors.grey.shade800,)),
+                  child:Icon(Icons.person_add_alt,color: Colors.grey.shade800,)),
             ),
             GestureDetector(
               onTap: (){

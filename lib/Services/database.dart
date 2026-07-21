@@ -20,7 +20,7 @@ class FirestoreService {
     List<String> userIds = [userId1, userId2];
     userIds.sort();
     final chatId = userIds.join('_');
-    chatCollections.doc(chatId).set(
+    await chatCollections.doc(chatId).set(
       {
         'users':[userId1,userId2],
         'created_at':DateTime.now(),
@@ -78,7 +78,14 @@ class FirestoreService {
       }
     );
 
+
   }
+  Future<QuerySnapshot> getUser(String phoneNumber)async{
+    final user=usersCollections.where("phone_number",isEqualTo: phoneNumber).get();
+    return user;
+
+  }
+
 
 
 }

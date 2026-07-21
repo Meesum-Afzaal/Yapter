@@ -38,11 +38,13 @@ class MyBoxShadow {
 /// =======================
 class MyBoxDecoration extends Decoration {
   final Color color;
+  final Gradient? gradient; // Added gradient support
   final BorderRadiusGeometry borderRadius;
   final List<MyBoxShadow> boxShadow;
 
   const MyBoxDecoration({
     this.color = Colors.white,
+    this.gradient, // Initialize gradient
     this.borderRadius = BorderRadius.zero,
     this.boxShadow = const [],
   });
@@ -59,6 +61,7 @@ class MyBoxDecoration extends Decoration {
 
     return MyBoxDecoration(
       color: Color.lerp(a?.color, b?.color, t) ?? Colors.white,
+      gradient: Gradient.lerp(a?.gradient, b?.gradient, t), // Lerp the gradient
       borderRadius:
       BorderRadiusGeometry.lerp(a?.borderRadius, b?.borderRadius, t) ??
           BorderRadius.zero,
@@ -115,8 +118,14 @@ class _MyBoxPainter extends BoxPainter {
       }
     }
 
-    // 🎨 Fill color
-    final Paint fillPaint = Paint()..color = decoration.color;
+    // 🎨 Fill color OR Gradient (The Key Fix)
+    final Paint fillPaint = Paint();
+    if (decoration.gradient != null) {
+      // Create a shader from the gradient matching the exact size of the button
+      fillPaint.shader = decoration.gradient!.createShader(rect);
+    } else {
+      fillPaint.color = decoration.color;
+    }
     canvas.drawRRect(rrect, fillPaint);
 
     // 🌒 Draw inset shadows
@@ -127,48 +136,25 @@ class _MyBoxPainter extends BoxPainter {
     }
   }
 
-  /// =======================
-  /// Outer Shadow (Improved)
-  /// =======================
   void _drawOuterShadow(Canvas canvas, RRect rrect, MyBoxShadow shadow) {
     final double blurSigma = _convertRadiusToSigma(shadow.blurRadius);
-
     final Paint paint = Paint()
       ..color = shadow.color
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
-
-    // 🔥 Controlled spread (prevents bloated edges)
     final double adjustedSpread = shadow.spreadRadius * 0.5;
-
     final RRect spreadRRect = rrect.inflate(adjustedSpread);
-
-    canvas.drawRRect(
-      spreadRRect.shift(shadow.offset),
-      paint,
-    );
+    canvas.drawRRect(spreadRRect.shift(shadow.offset), paint);
   }
 
-  /// =======================
-  /// Inset Shadow (Improved)
-  /// =======================
   void _drawInsetShadow(
-      Canvas canvas,
-      Rect rect,
-      RRect rrect,
-      MyBoxShadow shadow,
-      ) {
+      Canvas canvas, Rect rect, RRect rrect, MyBoxShadow shadow) {
     final double blurSigma = _convertRadiusToSigma(shadow.blurRadius);
-
-    // 🔥 Softer inner spread
     final RRect outer =
     rrect.inflate(shadow.spreadRadius * 0.6).shift(shadow.offset);
-
     final Path outerPath = Path()..addRRect(outer);
     final Path innerPath = Path()..addRRect(rrect);
-
     final Path shadowRing =
     Path.combine(PathOperation.difference, outerPath, innerPath);
-
     final Paint paint = Paint()
       ..color = shadow.color.withOpacity(0.85)
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, blurSigma);
@@ -179,11 +165,7 @@ class _MyBoxPainter extends BoxPainter {
     canvas.restore();
   }
 
-  /// =======================
-  /// Blur Tuning (Key Fix)
-  /// =======================
   double _convertRadiusToSigma(double radius) {
-    // smoother, more natural blur curve
     return radius * 0.4 + 0.6;
   }
 }

@@ -18,7 +18,7 @@ class Message {
   factory Message.fromMap(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Message(
-      messageId: doc.id, // Capture the Firestore document ID here!
+      messageId: doc.id,
       senderId: data['senderId'] ?? '',
       receiverId: data['receiverId'] ?? '',
       text: data['text'] ?? '',
