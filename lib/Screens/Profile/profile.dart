@@ -7,11 +7,10 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Color baseColor = Color(0xFFE6EBF2);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: baseColor,
+
       body: Center(child: Text("Profile Coming soon"),),
       
     );

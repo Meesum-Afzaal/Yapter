@@ -13,7 +13,7 @@ class NeumorphicButton extends StatefulWidget {
   const NeumorphicButton({
     super.key,
     this.backgroundColor,
-    this.gradient, // Added to constructor
+    this.gradient,
     this.width,
     this.height,
     this.borderRadius,
@@ -40,7 +40,7 @@ class _NeumorphicButtonState extends State<NeumorphicButton> {
       height: widget.height,
       decoration: MyBoxDecoration(
         color: widget.backgroundColor ?? Colors.transparent,
-        gradient: widget.gradient, // Passed to your updated custom decoration
+        gradient: widget.gradient,
         borderRadius: widget.borderRadius ?? BorderRadius.circular(15),
         boxShadow: [
           MyBoxShadow(

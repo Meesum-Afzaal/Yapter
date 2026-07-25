@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:yapter/Models/user.dart';
 class FirestoreService {
   final CollectionReference usersCollections=FirebaseFirestore.instance.collection('users');
   final CollectionReference chatCollections=FirebaseFirestore.instance.collection('chats');
@@ -28,7 +29,7 @@ class FirestoreService {
     );
 
   }
-  Future<void> addFriend(String currentUserId, String friendId) async {
+  Future<void> addFriend(String currentUserId, String? friendId) async {
     await usersCollections.doc(currentUserId).collection("friends").doc(friendId).set({
       "uid": friendId,
       "status": "pending",
@@ -54,12 +55,29 @@ class FirestoreService {
     await usersCollections.doc(friendId).collection("friends").doc(currentUserId).delete();
   }
 
-  Future<QuerySnapshot> getFriendRequests(String userId) async {
-    final friendRequests = await usersCollections.doc(userId).collection("friends").where("status", isEqualTo: "pending").get();
+  Future<List<UserDetails>> getFriendRequests(String userId) async {
+    final friendRequests = await usersCollections
+        .doc(userId)
+        .collection("friends")
+        .where("status", isEqualTo: "received")
+        .get();
 
-    return friendRequests;
+    final requests = await Future.wait(
+      friendRequests.docs.map((friend) async {
+        final userDoc = await usersCollections.doc(friend["uid"]).get();
 
+        final data = userDoc.data() as Map<String, dynamic>;
 
+        return UserDetails(
+          uid: userDoc.id,
+          firstName: data["first_name"],
+          lastName: data["last_name"],
+          phoneNumber: data["phone_number"],
+        );
+      }),
+    );
+
+    return requests;
   }
   Future<QuerySnapshot> getFriends(String userId) async {
     final friends = await usersCollections.doc(userId).collection("friends").where("status", isEqualTo: "accepted").get();

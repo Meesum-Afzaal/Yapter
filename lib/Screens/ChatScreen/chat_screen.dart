@@ -182,6 +182,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         title: Column(
           children: [
             Text(
@@ -270,16 +271,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 NeumorphicButton(
                   height: 50,
                   width: 50,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      lightBlueHighlight,
-                      baseVibrantBlue,
-                      darkBlueShadow,
-                    ],
-                    stops: const [0.0, 0.5, 1.0],
-                  ),
+                  backgroundColor: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(50),
                   child: IconButton(
                       onPressed: () {
@@ -298,7 +290,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       },
                       icon: Icon(
                         Icons.send,
-                        color: theme.colorScheme.onPrimary,
+                        color: Colors.blue,
                       )),
                 )
               ],
