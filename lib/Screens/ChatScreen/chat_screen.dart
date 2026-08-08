@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yapter/Designs/flutterNeumorphic_button.dart';
+import 'package:yapter/Designs/neumorphic_container.dart';
 import 'package:yapter/Models/message.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -217,7 +217,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               if (dummyMessages[index].senderId == 'me')
                                 const Spacer(),
                               Expanded(
-                                child: NeumorphicButton(
+                                child: NeumorphicContainer(
                                   backgroundColor: theme.colorScheme.surface,
                                   isPressed: dummyMessages[index].senderId == 'me',
                                   child: Container(
@@ -245,7 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: NeumorphicButton(
+                  child: NeumorphicContainer(
                     height: 50,
                     width: 50,
                     backgroundColor: theme.colorScheme.surface,
@@ -268,7 +268,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                NeumorphicButton(
+                NeumorphicContainer(
                   height: 50,
                   width: 50,
                   backgroundColor: theme.colorScheme.surface,

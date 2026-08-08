@@ -1,7 +1,7 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yapter/Designs/flutterNeumorphic_button.dart';
+import 'package:yapter/Designs/neumorphic_container.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
 import 'package:yapter/Models/user.dart';
 import 'package:yapter/Providers/userProvider.dart';
@@ -97,7 +97,7 @@ class _RegisterState extends State<Register> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    NeumorphicButton(
+                    NeumorphicContainer(
                       height: 130,
                       width: 130,
                       backgroundColor: baseColor,
@@ -114,7 +114,7 @@ class _RegisterState extends State<Register> {
                     key: formKey,
                     child: Column(
                       children: [
-                        NeumorphicButton(
+                        NeumorphicContainer(
                           height: 50,
                           width: double.infinity,
                           backgroundColor: baseColor,
@@ -150,7 +150,7 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                         SizedBox(height: 35),
-                        NeumorphicButton(
+                        NeumorphicContainer(
                           height: 50,
                           width: double.infinity,
                           backgroundColor: baseColor,
@@ -188,7 +188,7 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                         SizedBox(height: 35),
-                        NeumorphicButton(
+                        NeumorphicContainer(
                           height: 50,
                           width: double.infinity,
                           backgroundColor: baseColor,
@@ -271,7 +271,7 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                         SizedBox(height: 60),
-                        NeumorphicButton(
+                        NeumorphicContainer(
                           height: 50,
                           width: 180,
 

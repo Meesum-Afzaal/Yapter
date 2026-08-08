@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:yapter/Designs/myboxdec.dart';
 
-class NeumorphicButton extends StatefulWidget {
+class NeumorphicContainer extends StatefulWidget {
   final Color? backgroundColor;
-  final Gradient? gradient; // Added to accept gradient background
+  final Gradient? gradient;
   final double? width;
   final double? height;
   final BorderRadius? borderRadius;
   final Widget? child;
   final bool? isPressed;
 
-  const NeumorphicButton({
+  const NeumorphicContainer({
     super.key,
     this.backgroundColor,
     this.gradient,
@@ -22,15 +22,15 @@ class NeumorphicButton extends StatefulWidget {
   });
 
   @override
-  State<NeumorphicButton> createState() => _NeumorphicButtonState();
+  State<NeumorphicContainer> createState() => _NeumorphicButtonState();
 }
 
-class _NeumorphicButtonState extends State<NeumorphicButton> {
+class _NeumorphicButtonState extends State<NeumorphicContainer> {
   @override
   Widget build(BuildContext context) {
     bool isPressed = widget.isPressed ?? false;
 
-    final offset = isPressed ? const Offset(10, 10) : const Offset(8, 8);
+    final offset = isPressed ? const Offset(10, 10) : const Offset(5, 5);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
@@ -47,8 +47,8 @@ class _NeumorphicButtonState extends State<NeumorphicButton> {
             offset: -offset,
             color: isPressed
                 ? Colors.grey.shade400
-                : Colors.white.withOpacity(0.6),
-            spreadRadius: -2,
+                : Colors.white.withOpacity(0.9),
+            spreadRadius: -1,
             blurRadius: isPressed ? 10 : 12,
             inset: isPressed ? true : false,
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yapter/Designs/flutterNeumorphic_button.dart';
+import 'package:yapter/Designs/neumorphic_container.dart';
 import 'package:yapter/Screens/Home/home.dart';
 import 'package:yapter/Screens/Profile/profile.dart';
 import 'package:yapter/Screens/AddFriend/add_friend.dart';
@@ -34,7 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   index=0;
                 });
               },
-            child:NeumorphicButton(
+            child:NeumorphicContainer(
               height: 60,
             width: 60,
                 backgroundColor:baseColor ,
@@ -48,7 +48,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   index=1;
                 });
               },
-              child: NeumorphicButton(
+              child: NeumorphicContainer(
                   height: 60,
                   width: 60,
                   isPressed: index==1,
@@ -61,7 +61,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   index=2;
                 });
               },
-              child: NeumorphicButton(
+              child: NeumorphicContainer(
                   height: 60,
                   width: 60,
                   isPressed: index==2,

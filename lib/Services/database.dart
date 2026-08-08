@@ -56,33 +56,62 @@ class FirestoreService {
   }
 
   Future<List<UserDetails>> getFriendRequests(String userId) async {
-    final friendRequests = await usersCollections
-        .doc(userId)
-        .collection("friends")
-        .where("status", isEqualTo: "received")
-        .get();
 
-    final requests = await Future.wait(
-      friendRequests.docs.map((friend) async {
-        final userDoc = await usersCollections.doc(friend["uid"]).get();
+      try {
+        final friendRequests = await usersCollections
+            .doc(userId)
+            .collection("friends")
+            .where("status", isEqualTo: "received")
+            .get();
 
-        final data = userDoc.data() as Map<String, dynamic>;
 
-        return UserDetails(
-          uid: userDoc.id,
-          firstName: data["first_name"],
-          lastName: data["last_name"],
-          phoneNumber: data["phone_number"],
+        final requests = await Future.wait(
+          friendRequests.docs.map((friend) async {
+            final userDoc = await usersCollections.doc(friend["uid"]).get();
+            final data = userDoc.data() as Map<String, dynamic>;
+
+            return UserDetails(
+              uid: userDoc.id,
+              firstName: data["first_name"] ?? '',
+              lastName: data["last_name"] ?? '',
+              phoneNumber: data["phone_number"] ?? '',
+            );
+          }),
         );
-      }),
-    );
 
-    return requests;
-  }
-  Future<QuerySnapshot> getFriends(String userId) async {
-    final friends = await usersCollections.doc(userId).collection("friends").where("status", isEqualTo: "accepted").get();
-    return friends;
-  }
+        return requests;
+
+      } catch (e) {
+        print("Error fetching friend requests: $e");
+        return [];
+      }
+    }
+
+  Future<List<UserDetails>> getFriends(String userId) async {
+    try{
+      final _friends = await usersCollections.doc(userId).collection("friends").where("status", isEqualTo: "accepted").get();
+      final friends = await Future.wait(
+        _friends.docs.map((friend) async {
+          final userDoc = await usersCollections.doc(friend["uid"]).get();
+          final data = userDoc.data() as Map<String, dynamic>;
+
+          return UserDetails(
+            uid: userDoc.id,
+            firstName: data["first_name"] ?? '',
+            lastName: data["last_name"] ?? '',
+            phoneNumber: data["phone_number"] ?? '',
+          );
+        }),
+      );
+      return friends;
+      
+    }catch(e){
+      print("Fetching Friends gone wrong");
+      return [];
+      
+    }
+    
+    }
   Future<void> sendMessage(String senderId, String receiverId, String message) async {
     List<String> userIds = [senderId, receiverId];
     userIds.sort();

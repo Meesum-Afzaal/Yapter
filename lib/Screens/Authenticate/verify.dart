@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
-import 'package:yapter/Designs/flutterNeumorphic_button.dart';
+import 'package:yapter/Designs/neumorphic_container.dart';
 import 'package:yapter/Models/user.dart';
 import 'package:yapter/Providers/firestore_service_provider.dart';
 import 'package:yapter/Providers/userProvider.dart';
@@ -97,7 +97,7 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      NeumorphicButton(
+                      NeumorphicContainer(
                             height: 45,
                             width: 45,
 
@@ -157,7 +157,7 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                   //   ),
                   // ),
                   // SizedBox(width: 8.0,),
-                  NeumorphicButton(
+                  NeumorphicContainer(
                     height: 50,
                     width: 180,
         

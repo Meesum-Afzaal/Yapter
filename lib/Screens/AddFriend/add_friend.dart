@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yapter/Designs/flutterNeumorphic_button.dart';
+import 'package:yapter/Designs/neumorphic_circle.dart';
+import 'package:yapter/Designs/neumorphic_container.dart';
 import 'package:yapter/Models/user.dart';
 import 'package:yapter/Providers/firestore_service_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,22 +22,40 @@ class _AddFriendState extends ConsumerState<AddFriend> {
   DateTime? joined_at;
   bool searchActive=false;
   final currentUserId= FirebaseAuth.instance.currentUser!.uid;
+  List<UserDetails>? requests;
+  bool requestLoad=true;
+  @override
+  void initState() {
+    super.initState();
+    loadFriendRequests();
+  }
+
+  void loadFriendRequests() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final _requests = await ref.read(firestoreServiceProvider).getFriendRequests(userId);
+
+      setState(() {
+        requests = _requests;
+        requestLoad = false;
+      });
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final service = ref.watch(firestoreServiceProvider);
-
     return Scaffold(
       appBar: AppBar(
           title: Text("Add Friend"),
         actions: [
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
-                child: Stack(
+                child:requestLoad ?SizedBox(height:20,width: 20,child: CircularProgressIndicator(color: Colors.blue)): Stack(
                   children: [
                     IconButton(
                         onPressed: (){
-                          Navigator.push(context,MaterialPageRoute(builder: (context)=>FriendRequests()));
+                          Navigator.push(context,MaterialPageRoute(builder: (context)=>FriendRequests(requests: requests!,)));
                         },
                         icon:Icon(Icons.group_add_outlined)
 
@@ -52,7 +71,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                           color: Colors.blue
                         ),
                         child: Center(
-                          child: Text("1",style: TextStyle(color: Colors.white),),
+                          child: requests!.isEmpty ? Text("0",style: TextStyle(color: Colors.white,fontSize: 10),):Text("${requests!.length}",style: TextStyle(color: Colors.white,fontSize: 10),),
                         ),
                       ),
                     )
@@ -68,7 +87,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
             Row(
               children: [
                 Expanded(
-                  child: NeumorphicButton(
+                  child: NeumorphicContainer(
                     backgroundColor: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(40),
                     child: Center(
@@ -87,7 +106,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                   ),
                 ),
                 SizedBox(width: 10),
-                NeumorphicButton(
+                NeumorphicContainer(
                   backgroundColor: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(30),
                   child: IconButton(
@@ -142,7 +161,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                   searchActive ?
                   AnimatedSize(
                     duration: Duration(milliseconds: 250),
-                    child: NeumorphicButton(
+                    child: NeumorphicContainer(
                       backgroundColor: theme.colorScheme.surface,
                       isPressed:loading,
                       child: loading
@@ -156,67 +175,65 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  NeumorphicButton(
-                                    backgroundColor: theme.colorScheme.surface,
-                                    isPressed:true,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "First Name : ${_userDetails!.firstName}",
-                                            style: theme.textTheme.bodyMedium,
-                                          ),
-                                          Text(
-                                            "Last Name : ${_userDetails!.lastName}",
-                                            style: theme.textTheme.bodyMedium,
-                                          ),
-                                          Text(
-                                            "Phone Number : ${_userDetails!.phoneNumber}",
-                                            style: theme.textTheme.bodyMedium,
-                                          ),
-                                          Text(
-                                            "Joined : ${joined_at!.year}",
-                                            style: theme.textTheme.bodyMedium,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                 Row(
+                                   children: [
+                                     NeumorphicCircle(
+                                         size: 55.0,
+                                         backgroundColor: theme.colorScheme.surface,
+                                         child: Icon(Icons.person,color: Colors.grey.shade600,)
+                                     ),
+                                     SizedBox(width: 15.0,),
+                                     Column(
+                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                       children: [
+                                         Text(
+                                           "${_userDetails!.firstName} ${_userDetails!.lastName}",
+                                           style: theme.textTheme.bodyLarge,
+                                         ),
+                                         Text(
+                                           "${_userDetails!.phoneNumber}",
+                                           style: theme.textTheme.bodySmall,
+                                         )
+                                       ],
+                                     )
+                                   ],
+
+                                 ),
                                   Padding(
                                     padding: EdgeInsetsGeometry.fromLTRB(0, 0, 6.0, 0),
-                                    child: NeumorphicButton(
+                                    child: NeumorphicContainer(
                                       backgroundColor: theme.colorScheme.surface,
-                                      child: IconButton(
-                                        onPressed: () {
-                                         if(currentUserId==_userDetails!.uid){
-                                           ScaffoldMessenger.of(context).showSnackBar(
-                                             SnackBar(
-                                               backgroundColor: Colors.transparent,
-                                                 elevation: 0,
-                                                 content:Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: IconButton(
+                                          onPressed: () {
+                                           if(currentUserId==_userDetails!.uid){
+                                             ScaffoldMessenger.of(context).showSnackBar(
+                                               SnackBar(
+                                                 backgroundColor: Colors.transparent,
+                                                   elevation: 0,
+                                                   content:Container(
 
-                                                   padding: EdgeInsets.all(16.0),
-                                                     decoration: BoxDecoration(
-                                                       color: Colors.black87,
-                                                       borderRadius: BorderRadius.circular(50)
-                                                     ),
-                                                     child: Text("You cannot send request to yourself!",style: TextStyle(color: Colors.white,fontSize: 14.0),),
+                                                     padding: EdgeInsets.all(16.0),
+                                                       decoration: BoxDecoration(
+                                                         color: Colors.black87,
+                                                         borderRadius: BorderRadius.circular(50)
+                                                       ),
+                                                       child: Text("You cannot send request to yourself!",style: TextStyle(color: Colors.white,fontSize: 14.0),),
 
 
-                                                 )
-                                             ),
-                                           );
-                                           return;
-                                         }
-                                         service.addFriend(currentUserId,_userDetails!.uid);
-                                        },
-                                        icon: Icon(
-                                          size: 40,
-                                          Icons.person_add_alt_1_outlined,
-                                          color: Colors.blue,
+                                                   )
+                                               ),
+                                             );
+                                             return;
+                                           }
+                                           service.addFriend(currentUserId,_userDetails!.uid);
+                                          },
+                                          icon: Icon(
+                                            size: 30,
+                                            Icons.person_add_alt_1_outlined,
+                                            color: Colors.blue,
+                                          ),
                                         ),
                                       ),
                                     ),

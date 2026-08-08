@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:yapter/Designs/flutterNeumorphic_button.dart';
+import 'package:yapter/Designs/neumorphic_circle.dart';
+import 'package:yapter/Designs/neumorphic_container.dart';
+import 'package:yapter/Models/user.dart';
+import 'package:yapter/Providers/firestore_service_provider.dart';
 import 'package:yapter/Screens/ChatScreen/chat_screen.dart';
 import 'package:yapter/Services/auth.dart';
 import 'package:yapter/temp/tempUsers.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
@@ -15,6 +18,19 @@ class Home extends ConsumerStatefulWidget {
 class _HomeState extends ConsumerState<Home> {
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
   final Auth auth = Auth();
+  List<UserDetails>? friends;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+  void loadFriends()async{
+    final currentUserId=FirebaseAuth.instance.currentUser!.uid;
+    final response=await ref.read(firestoreServiceProvider).getFriends(currentUserId);
+    setState(() {
+      friends=response;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,22 +76,23 @@ class _HomeState extends ConsumerState<Home> {
                       ),
                       const SizedBox(height: 10),
                       SizedBox(
-                        height: 110,
+                        height: 120,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: onlineUsers.length,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 12),
+                                const EdgeInsets.symmetric(horizontal: 13,vertical: 10),
                                 child: Column(
                                   children: [
                                     Stack(
                                       children: [
-                                        CircleAvatar(
-                                          radius: 38,
-                                          backgroundImage: NetworkImage(
-                                              onlineUsers[index].image),
+
+                                        NeumorphicCircle(
+                                            size:65 ,
+                                            backgroundColor: baseColor,
+                                            child: Icon(Icons.person,color: Colors.grey.shade600,)
                                         ),
                                         Positioned(
                                           bottom: 2,
@@ -84,7 +101,7 @@ class _HomeState extends ConsumerState<Home> {
                                             height: 15,
                                             width: 15,
                                             decoration: BoxDecoration(
-                                              color: Colors.green,
+                                              color: Colors.blue,
                                               borderRadius:
                                               BorderRadius.circular(100),
                                             ),
@@ -97,7 +114,7 @@ class _HomeState extends ConsumerState<Home> {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 5),
+                                    const SizedBox(height: 4),
                                     Text(
                                       onlineUsers[index].name,
                                       style: TextStyle(
@@ -177,16 +194,15 @@ class _HomeState extends ConsumerState<Home> {
                         },
                         child: Center(
                           child: ListTile(
-                              leading: NeumorphicButton(
-                                height: 60,
-                                width: 60,
-                                isPressed: true,
-                                  borderRadius: BorderRadius.circular(50),
+                              leading: NeumorphicCircle(
+                                   size: 50,
+                                  backgroundColor: baseColor,
                                   child: Padding(
                                     padding: const EdgeInsets.all(6.0),
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(users[index].image),
-                                    ),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.grey.shade600,
+                                    )
                                   ),
                               ),
                               title: Text(users[index].name,
@@ -251,7 +267,7 @@ class _NeumorphicListItemState extends State<NeumorphicListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return NeumorphicButton(
+    return NeumorphicContainer(
       backgroundColor: const Color(0xFFE6EBF2),
       height: 70,
       width: double.infinity,
