@@ -7,7 +7,6 @@ import 'package:yapter/Providers/firestore_service_provider.dart';
 import 'package:yapter/Providers/userProvider.dart';
 import 'package:yapter/Services/auth.dart';
 
-
 class VerifyOTP extends ConsumerStatefulWidget {
   final String verificationId;
   final String phoneNumber;
@@ -171,8 +170,6 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                           final result = await _auth.signInWithOTP(widget.verificationId, pin);
                           await firestoreservice.addUser(result, widget.firstName, widget.lastName, widget.phoneNumber);
                           Navigator.popUntil(context, (route) => route.isFirst);
-
-                          //ref.read(userNotifierProvider.notifier).setUser(UserDetails(uid: result,firstName: widget.firstName,lastName: widget.lastName,phoneNumber: widget.phoneNumber));
 
                           
                           

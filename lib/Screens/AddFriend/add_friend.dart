@@ -24,10 +24,20 @@ class _AddFriendState extends ConsumerState<AddFriend> {
   final currentUserId= FirebaseAuth.instance.currentUser!.uid;
   List<UserDetails>? requests;
   bool requestLoad=true;
+  TextEditingController _controller=TextEditingController();
+  FocusNode _focusNode=FocusNode();
   @override
   void initState() {
     super.initState();
+    _controller.addListener(()=>setState(() {}));
+    _focusNode.addListener(()=>setState(() {}));
     loadFriendRequests();
+  }
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   void loadFriendRequests() async {
@@ -89,13 +99,16 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                 Expanded(
                   child: NeumorphicContainer(
                     backgroundColor: theme.colorScheme.surface,
+                    isPressed:_focusNode.hasFocus || _controller.text.isNotEmpty,
                     borderRadius: BorderRadius.circular(40),
                     child: Center(
                       child: TextFormField(
+                        controller: _controller,
+                        focusNode: _focusNode,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.fromLTRB(14, 0, 0, 0),
                           hintText: "Enter Phone number eg +923211234567",
-                          hintStyle: theme.textTheme.bodyMedium,
+                          hintStyle: theme.textTheme.bodySmall,
                           border: InputBorder.none,
                         ),
                         onChanged: (value) {
@@ -206,7 +219,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                                       child: Padding(
                                         padding: const EdgeInsets.all(2.0),
                                         child: IconButton(
-                                          onPressed: () {
+                                          onPressed: ()async {
                                            if(currentUserId==_userDetails!.uid){
                                              ScaffoldMessenger.of(context).showSnackBar(
                                                SnackBar(
@@ -227,7 +240,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                                              );
                                              return;
                                            }
-                                           service.addFriend(currentUserId,_userDetails!.uid);
+                                           await service.addFriend(currentUserId,_userDetails!.uid);
                                           },
                                           icon: Icon(
                                             size: 30,

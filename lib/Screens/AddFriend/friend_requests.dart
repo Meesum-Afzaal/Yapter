@@ -52,10 +52,10 @@ class _FriendRequestsState extends ConsumerState<FriendRequests> {
       body: widget.requests.isEmpty ?Center(child: Text("No friend Requests"),)
           :
       ListView.builder(
-        itemCount: tempList.length,
+        itemCount: widget.requests.length,
         padding: const EdgeInsets.symmetric(vertical: 20),
         itemBuilder: (context, index) {
-          final user = tempList[index];
+          final user = widget.requests[index];
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -99,9 +99,29 @@ class _FriendRequestsState extends ConsumerState<FriendRequests> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                          onTap: (){
-                            ref.read(firestoreServiceProvider).rejectFriendRequest(currentUserId, user.uid!);
-
+                          onTap: ()async{
+                            await ref.read(firestoreServiceProvider).rejectFriendRequest(currentUserId, user.uid!);
+                            setState(() {
+                              widget.requests.removeAt(index);
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                content: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade700,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: const Text(
+                                    "Friend request rejected",
+                                    style: TextStyle(color: Colors.white, fontSize: 14.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                           child: NeumorphicContainer(
                             backgroundColor: baseColor,
@@ -113,8 +133,31 @@ class _FriendRequestsState extends ConsumerState<FriendRequests> {
                         ),
                         const SizedBox(width: 16),
                         GestureDetector(
-                          onTap: (){
-                            ref.read(firestoreServiceProvider).acceptFriendRequest(currentUserId, user.uid!);
+                          onTap: ()async{
+                            print(currentUserId);
+                            print(user.firstName!);
+                            await ref.read(firestoreServiceProvider).acceptFriendRequest(currentUserId, user.uid!);
+                            setState(() {
+                              widget.requests.removeAt(index);
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.transparent,
+                                elevation: 0,
+                                content: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.shade700,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: const Text(
+                                    "Friend request accepted!",
+                                    style: TextStyle(color: Colors.white, fontSize: 14.0),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            );
 
 
                           },

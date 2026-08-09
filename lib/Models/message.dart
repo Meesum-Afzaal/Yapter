@@ -19,9 +19,9 @@ class Message {
     final data = doc.data() as Map<String, dynamic>;
     return Message(
       messageId: doc.id,
-      senderId: data['senderId'] ?? '',
-      receiverId: data['receiverId'] ?? '',
-      text: data['text'] ?? '',
+      senderId: data['sender_id'] ?? '',
+      receiverId: data['receiver_id'] ?? '',
+      text: data['message'] ?? '',
       createdAt: (data['created_at'] as Timestamp).toDate(),
     );
   }
