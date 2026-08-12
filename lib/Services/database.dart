@@ -122,6 +122,7 @@ class FirestoreService {
         "receiver_id": receiverId,
         "message": message,
         "created_at": DateTime.now(),
+        "seen":false
       }
     );
 
@@ -131,6 +132,21 @@ class FirestoreService {
     final user=usersCollections.where("phone_number",isEqualTo: phoneNumber).get();
     return user;
 
+  }
+  Future<void> markMessagesSeen(String chatId,String currentUserId)async{
+    final snapshot= await chatCollections.doc(chatId)
+        .collection("messages")
+        .where("receiver_id",isEqualTo: currentUserId)
+        .where("seen",isEqualTo: false)
+        .get();
+    final batch=FirebaseFirestore.instance.batch();
+    for(final doc in snapshot.docs){
+      batch.update(doc.reference, {
+        "seen":true,
+      });
+
+    }
+    await batch.commit();
   }
 
 

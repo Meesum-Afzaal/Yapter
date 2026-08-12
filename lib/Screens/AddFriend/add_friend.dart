@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:yapter/Designs/neumorphic_circle.dart';
 import 'package:yapter/Designs/neumorphic_container.dart';
 import 'package:yapter/Models/user.dart';
@@ -61,7 +62,18 @@ class _AddFriendState extends ConsumerState<AddFriend> {
         actions: [
               Padding(
                 padding: EdgeInsetsGeometry.fromLTRB(0, 0, 5, 0),
-                child:requestLoad ?SizedBox(height:20,width: 20,child: CircularProgressIndicator(color: Colors.blue)): Stack(
+                child:AnimatedSwitcher(duration: Duration(milliseconds: 300),
+                child: requestLoad ?
+                NeumorphicCircle(size: 30, child: SpinKitDualRing(
+                  key: const ValueKey("loading"),
+                  color: Colors.grey.shade600,
+                  size: 20.0,
+                  lineWidth: 2.0,
+                )
+                )
+                :
+                Stack(
+                  key: const ValueKey("loaded"),
                   children: [
                     IconButton(
                         onPressed: (){
@@ -69,7 +81,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                         },
                         icon:Icon(Icons.group_add_outlined)
 
-                              ),
+                    ),
                     Positioned(
                       top: 2,
                       right: 2,
@@ -77,8 +89,8 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                         height: 18,
                         width: 28,
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blue
+                            shape: BoxShape.circle,
+                            color: Colors.blue
                         ),
                         child: Center(
                           child: requests!.isEmpty ? Text("0",style: TextStyle(color: Colors.white,fontSize: 10),):Text("${requests!.length}",style: TextStyle(color: Colors.white,fontSize: 10),),
@@ -86,6 +98,7 @@ class _AddFriendState extends ConsumerState<AddFriend> {
                       ),
                     )
                   ],
+                ),
                 ),
               )
         ],

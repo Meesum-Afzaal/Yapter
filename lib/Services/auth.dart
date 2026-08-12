@@ -1,64 +1,120 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:yapter/Models/user.dart';
 
 class Auth {
-  String? verificationIdtemp;
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
+  Future<String?> verifyOTP(String phoneNumber) async {
+    final completer = Completer<String?>();
 
-  Future verifyOTP(String phoneNumber)async{
-    await auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential)async{
-        await auth.signInWithCredential(credential);
-      },
-      verificationFailed: (FirebaseAuthException e){
-        print(e.message);
-    },
-      codeSent: (String verificationId, int? resendToken){
-        verificationIdtemp=verificationId;
+    try {
+      await auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
 
-      },
-      codeAutoRetrievalTimeout: (String verificationId){},
-    );
-    return  verificationIdtemp;
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          try {
+            await auth.signInWithCredential(credential);
 
+            // Android may automatically verify the number.
+            // In this case there may be no need to show OTP screen.
+            if (!completer.isCompleted) {
+              completer.complete(null);
+            }
+          } catch (e) {
+            if (!completer.isCompleted) {
+              completer.completeError(e);
+            }
+          }
+        },
 
+        verificationFailed: (FirebaseAuthException e) {
+          print("Phone verification failed");
+          print("Code: ${e.code}");
+          print("Message: ${e.message}");
+
+          if (!completer.isCompleted) {
+            completer.completeError(e);
+          }
+        },
+
+        codeSent: (String verificationId, int? resendToken) {
+          print("OTP code sent");
+          print("Verification ID received");
+
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
+        },
+
+        codeAutoRetrievalTimeout: (String verificationId) {
+          print("OTP auto retrieval timeout");
+
+          // Do NOT complete the completer here.
+          //
+          // codeSent() has already provided the verificationId.
+        },
+      );
+
+      return await completer.future;
+    } catch (e) {
+      print("verifyOTP error: $e");
+
+      if (!completer.isCompleted) {
+        completer.completeError(e);
+      }
+
+      return null;
+    }
   }
 
-  Future<String> signInWithOTP(String verificationId,String otpPin)async{
-    try{
-      PhoneAuthCredential credential=await PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otpPin);
-      UserCredential result = await auth.signInWithCredential(credential);
+  Future<String> signInWithOTP(
+      String verificationId,
+      String otpPin,
+      ) async {
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otpPin,
+      );
+
+      final result = await auth.signInWithCredential(credential);
+
       if (result.user == null) {
         throw Exception("User sign-in failed: No user found.");
       }
-      String uid =result.user!.uid;
-      return uid;
-    }
-    catch(e){
+
+      return result.user!.uid;
+    } on FirebaseAuthException catch (e) {
+      print("OTP sign-in failed");
+      print("Code: ${e.code}");
+      print("Message: ${e.message}");
+
+      return e.message ?? e.code;
+    } catch (e) {
+      print("OTP sign-in error: $e");
       return e.toString();
     }
   }
-  Stream<UserDetails?> get user{
-    return auth.authStateChanges().map((firebaseuser){
-      if(firebaseuser==null){
+
+  Stream<UserDetails?> get user {
+    return auth.authStateChanges().map((firebaseUser) {
+      if (firebaseUser == null) {
         return null;
       }
-      return UserDetails(uid: firebaseuser.uid);
 
+      return UserDetails(
+        uid: firebaseUser.uid,
+      );
     });
   }
-  Future<void> signOut()async{
-    try{
-      await auth.signOut();
-    }
-    catch(e){
-     ;
 
+  Future<void> signOut() async {
+    try {
+      await auth.signOut();
+    } catch (e) {
+      print("Sign out error: $e");
     }
   }
-
-
 }

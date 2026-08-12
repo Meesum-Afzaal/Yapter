@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '332078150013',
     projectId: 'yapter-11151',
     authDomain: 'yapter-11151.firebaseapp.com',
+    databaseURL: 'https://yapter-11151-default-rtdb.firebaseio.com',
     storageBucket: 'yapter-11151.firebasestorage.app',
     measurementId: 'G-DD3E66NTYC',
   );
@@ -55,6 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:332078150013:android:cc6c8f8e84ce915865dc14',
     messagingSenderId: '332078150013',
     projectId: 'yapter-11151',
+    databaseURL: 'https://yapter-11151-default-rtdb.firebaseio.com',
     storageBucket: 'yapter-11151.firebasestorage.app',
   );
 
@@ -63,6 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:332078150013:ios:0ba46a6a1477fdf465dc14',
     messagingSenderId: '332078150013',
     projectId: 'yapter-11151',
+    databaseURL: 'https://yapter-11151-default-rtdb.firebaseio.com',
     storageBucket: 'yapter-11151.firebasestorage.app',
     iosBundleId: 'com.example.yapter',
   );
@@ -72,6 +75,7 @@ class DefaultFirebaseOptions {
     appId: '1:332078150013:ios:0ba46a6a1477fdf465dc14',
     messagingSenderId: '332078150013',
     projectId: 'yapter-11151',
+    databaseURL: 'https://yapter-11151-default-rtdb.firebaseio.com',
     storageBucket: 'yapter-11151.firebasestorage.app',
     iosBundleId: 'com.example.yapter',
   );
@@ -82,7 +86,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '332078150013',
     projectId: 'yapter-11151',
     authDomain: 'yapter-11151.firebaseapp.com',
+    databaseURL: 'https://yapter-11151-default-rtdb.firebaseio.com',
     storageBucket: 'yapter-11151.firebasestorage.app',
     measurementId: 'G-FXBTN2QC07',
   );
+
 }

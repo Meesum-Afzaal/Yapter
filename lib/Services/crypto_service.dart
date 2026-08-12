@@ -18,7 +18,7 @@ class CryptoService {
   FlutterSecureStorage();
   Future<void> initializeKeys() async {
     final existingPrivateKey = await _storage.read(
-      key: 'x25519_private_key',
+      key: 'yapter_x25519_key',
     );
     if (existingPrivateKey != null) {
       return;

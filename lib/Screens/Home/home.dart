@@ -8,6 +8,7 @@ import 'package:yapter/Screens/ChatScreen/chat_screen.dart';
 import 'package:yapter/Services/auth.dart';
 import 'package:yapter/temp/tempUsers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:yapter/Theme/app_theme.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
@@ -17,19 +18,24 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  final Auth auth = Auth();
-  List<UserDetails>? friends;
-  bool loading=true;
+  final GlobalKey<AnimatedListState> _listKey =
+  GlobalKey<AnimatedListState>();
 
-  TextEditingController _searchController = TextEditingController();
-  FocusNode _searchFocusNode = FocusNode();
+  final Auth auth = Auth();
+
+  List<UserDetails>? friends;
+  bool loading = true;
+
+  final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+
     _searchController.addListener(() => setState(() {}));
     _searchFocusNode.addListener(() => setState(() {}));
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       loadFriends();
     });
@@ -44,11 +50,15 @@ class _HomeState extends ConsumerState<Home> {
 
   void loadFriends() async {
     final currentUserId = FirebaseAuth.instance.currentUser!.uid;
-    final response = await ref.read(firestoreServiceProvider).getFriends(currentUserId);
+
+    final response = await ref
+        .read(firestoreServiceProvider)
+        .getFriends(currentUserId);
+
     if (mounted) {
       setState(() {
         friends = response;
-        loading=false;
+        loading = false;
       });
     }
   }
@@ -56,10 +66,19 @@ class _HomeState extends ConsumerState<Home> {
   @override
   Widget build(BuildContext context) {
     final users = ref.watch(userProvider);
-    Color baseColor = const Color(0xFFE6EBF2);
+
+    // Gets the background from the currently active AppTheme.
+    final baseColor = AppTheme.background(context);
+
+    // Gets Flutter's current theme colors.
+    final textColor = Theme.of(context).colorScheme.onSurface;
+
+    final secondaryTextColor =
+    Theme.of(context).colorScheme.onSurface.withOpacity(0.6);
 
     return Scaffold(
       backgroundColor: baseColor,
+
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
         backgroundColor: baseColor,
@@ -68,29 +87,59 @@ class _HomeState extends ConsumerState<Home> {
         title: Text(
           "Yapter",
           style: TextStyle(
-              color: Colors.grey.shade800, fontWeight: FontWeight.bold),
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
-      body:loading ?Center(child: NeumorphicCircle(backgroundColor: baseColor,size: 60, child: CircularProgressIndicator(color: Colors.grey.shade600,))) : Column(
+
+      body: AnimatedSwitcher(duration: Duration(milliseconds: 300),child:
+      loading
+          ? Center(
+        child: NeumorphicCircle(
+          key: const ValueKey("loading"),
+          backgroundColor: baseColor,
+          size: 60,
+          child: CircularProgressIndicator(
+            color: secondaryTextColor,
+          ),
+        ),
+      )
+          : Column(
+        key: const ValueKey("loaded"),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+            padding: const EdgeInsets.fromLTRB(
+              20.0,
+              10.0,
+              20.0,
+              10.0,
+            ),
             child: Row(
               children: [
                 Expanded(
                   child: NeumorphicContainer(
                     backgroundColor: baseColor,
-                    isPressed: _searchFocusNode.hasFocus || _searchController.text.isNotEmpty,
+                    isPressed: _searchFocusNode.hasFocus ||
+                        _searchController.text.isNotEmpty,
                     borderRadius: BorderRadius.circular(40),
                     child: Center(
                       child: TextFormField(
                         controller: _searchController,
                         focusNode: _searchFocusNode,
+                        style: TextStyle(
+                          color: textColor,
+                        ),
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          contentPadding:
+                          const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
                           hintText: "Search Friends",
-                          hintStyle: TextStyle(color: Colors.grey.shade600),
+                          hintStyle: TextStyle(
+                            color: secondaryTextColor,
+                          ),
                           border: InputBorder.none,
                         ),
                         onChanged: (value) {},
@@ -98,30 +147,51 @@ class _HomeState extends ConsumerState<Home> {
                     ),
                   ),
                 ),
+
                 const SizedBox(width: 10),
+
                 NeumorphicContainer(
                   backgroundColor: baseColor,
                   borderRadius: BorderRadius.circular(30),
                   child: IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.search, color: Colors.blue),
+                    icon: const Icon(
+                      Icons.search,
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+
           Padding(
-            padding: const EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
+            padding: const EdgeInsets.fromLTRB(
+              25.0,
+              10.0,
+              25.0,
+              10.0,
+            ),
             child: Text(
               "Messages",
               style: TextStyle(
-                  color: Colors.grey.shade800,
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.bold),
+                color: textColor,
+                fontSize: 22.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          friends!.isEmpty ? Center(child: Text("No friends"),):
-          Expanded(
+
+          friends!.isEmpty
+              ? Center(
+            child: Text(
+              "No friends",
+              style: TextStyle(
+                color: textColor,
+              ),
+            ),
+          )
+              : Expanded(
             child: AnimatedList(
               key: _listKey,
               initialItemCount: friends!.length,
@@ -130,61 +200,81 @@ class _HomeState extends ConsumerState<Home> {
                   sizeFactor: animation,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0, vertical: 10.0),
+                      horizontal: 20.0,
+                      vertical: 10.0,
+                    ),
                     child: NeumorphicListItem(
                       index: index,
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ChatScreen(
-                                      friendUid: friends![index].uid!,
-                                    friendName: friends![index].firstName!,
-                                  )));
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ChatScreen(
+                                    friendUid:
+                                    friends![index].uid!,
+                                    friendName:
+                                    friends![index].firstName!,
+                                  ),
+                            ),
+                          );
                         },
                         child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 4.0),
-                            leading: NeumorphicCircle(
-                              size: 55,
-                              backgroundColor: baseColor,
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.grey.shade600,
-                                size: 28,
-                              ),
+                          contentPadding:
+                          const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 4.0,
+                          ),
+                          leading: NeumorphicCircle(
+                            size: 55,
+                            backgroundColor: baseColor,
+                            child: Icon(
+                              Icons.person,
+                              color: secondaryTextColor,
+                              size: 28,
                             ),
-                            title: Text(friends![index].firstName!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                          ),
+                          title: Text(
+                            friends![index].firstName!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "Hello, how are you?",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: secondaryTextColor,
+                              fontSize: 13.0,
+                            ),
+                          ),
+                          trailing: Column(
+                            mainAxisAlignment:
+                            MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "12:00",
                                 style: TextStyle(
-                                    color: Colors.grey.shade800,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold)),
-                            subtitle: Text(
-                              "Hello, how are you?",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color: Colors.grey.shade600, fontSize: 13.0),
-                            ),
-                            trailing: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text("12:00",
-                                    style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontSize: 12.0)),
-                                const SizedBox(height: 6),
-                                const Icon(
-                                  Icons.done_all,
-                                  size: 18,
-                                  color: Colors.blue,
+                                  color: secondaryTextColor,
+                                  fontSize: 12.0,
                                 ),
-                              ],
-                            )),
+                              ),
+                              const SizedBox(height: 6),
+                              const Icon(
+                                Icons.done_all,
+                                size: 18,
+                                color: Colors.blue,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -194,6 +284,7 @@ class _HomeState extends ConsumerState<Home> {
           ),
         ],
       ),
+      )
     );
   }
 }
@@ -202,10 +293,15 @@ class NeumorphicListItem extends StatefulWidget {
   final int index;
   final Widget child;
 
-  const NeumorphicListItem({super.key, required this.index, required this.child});
+  const NeumorphicListItem({
+    super.key,
+    required this.index,
+    required this.child,
+  });
 
   @override
-  State<NeumorphicListItem> createState() => _NeumorphicListItemState();
+  State<NeumorphicListItem> createState() =>
+      _NeumorphicListItemState();
 }
 
 class _NeumorphicListItemState extends State<NeumorphicListItem> {
@@ -214,17 +310,21 @@ class _NeumorphicListItemState extends State<NeumorphicListItem> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 100 * widget.index), () {
-      if (mounted) {
-        setState(() => _isPopped = true);
-      }
-    });
+
+    Future.delayed(
+      Duration(milliseconds: 100 * widget.index),
+          () {
+        if (mounted) {
+          setState(() => _isPopped = true);
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return NeumorphicContainer(
-      backgroundColor: const Color(0xFFE6EBF2),
+      backgroundColor: AppTheme.background(context),
       isPressed: !_isPopped,
       borderRadius: BorderRadius.circular(16),
       child: widget.child,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yapter/Designs/myboxdec.dart';
+import 'package:yapter/Theme/app_theme.dart';
 
 class NeumorphicContainer extends StatefulWidget {
   final Color? backgroundColor;
@@ -22,15 +23,20 @@ class NeumorphicContainer extends StatefulWidget {
   });
 
   @override
-  State<NeumorphicContainer> createState() => _NeumorphicButtonState();
+  State<NeumorphicContainer> createState() => _NeumorphicContainerState();
 }
 
-class _NeumorphicButtonState extends State<NeumorphicContainer> {
+class _NeumorphicContainerState extends State<NeumorphicContainer> {
   @override
   Widget build(BuildContext context) {
-    bool isPressed = widget.isPressed ?? false;
-
+    final bool isPressed = widget.isPressed ?? false;
     final offset = isPressed ? const Offset(10, 10) : const Offset(5, 5);
+
+    final themeBackground = AppTheme.background(context);
+
+    final lightShadow = AppTheme.lightShadow(context);
+
+    final darkShadow = AppTheme.darkShadow(context);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
@@ -39,30 +45,29 @@ class _NeumorphicButtonState extends State<NeumorphicContainer> {
       width: widget.width,
       height: widget.height,
       decoration: MyBoxDecoration(
-        color: widget.backgroundColor ?? Colors.transparent,
+        color: widget.backgroundColor ?? themeBackground,
         gradient: widget.gradient,
         borderRadius: widget.borderRadius ?? BorderRadius.circular(15),
         boxShadow: [
           MyBoxShadow(
             offset: -offset,
-            color: isPressed
-                ? Colors.grey.shade400
-                : Colors.white.withOpacity(0.9),
+            color: isPressed ? darkShadow : lightShadow.withOpacity(0.9),
             spreadRadius: -1,
             blurRadius: isPressed ? 10 : 12,
-            inset: isPressed ? true : false,
+            inset: isPressed,
           ),
+
           MyBoxShadow(
             offset: offset,
-            color: isPressed ? Colors.white : Colors.grey.shade400,
+            color: isPressed ? lightShadow : darkShadow,
             spreadRadius: -2,
             blurRadius: isPressed ? 10 : 12,
-            inset: isPressed ? true : false,
+            inset: isPressed,
           ),
         ],
       ),
+
       child: widget.child,
     );
   }
 }
-
