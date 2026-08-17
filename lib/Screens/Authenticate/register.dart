@@ -307,7 +307,7 @@ class _RegisterState extends State<Register> {
                                   hintText:
                                   errorText
                                       .isEmpty
-                                      ? "First Name"
+                                      ? "Enter your name"
                                       : errorText,
 
                                   hintStyle:

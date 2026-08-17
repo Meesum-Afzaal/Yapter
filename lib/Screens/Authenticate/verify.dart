@@ -13,6 +13,7 @@ class VerifyOTP extends ConsumerStatefulWidget {
   final String phoneNumber;
   final String firstName;
   final String lastName;
+
   const VerifyOTP({
     super.key,
     required this.verificationId,
@@ -26,19 +27,26 @@ class VerifyOTP extends ConsumerStatefulWidget {
 }
 
 class _VerifyOTPState extends ConsumerState<VerifyOTP> {
-  Color baseColor = const Color(0xFFE6EBF2);
   final controller = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
   String? errorText;
   bool isPressed = false;
   bool isPressed2 = false;
   bool isLoading = false;
   String pin = "";
+
   final Auth _auth = Auth();
 
   @override
   Widget build(BuildContext context) {
     final firestoreservice = ref.read(firestoreServiceProvider);
+
+    // Fetch theme colors dynamically just like the Register screen
+    final theme = Theme.of(context);
+    final baseColor = theme.colorScheme.surface;
+    final textColor = theme.colorScheme.onSurface;
+    final secondaryTextColor = textColor.withOpacity(0.6);
 
     return Scaffold(
       backgroundColor: baseColor,
@@ -46,12 +54,15 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
         title: Text(
           "OTP Verification",
           style: TextStyle(
-              fontSize: 18.0,
-              color: Colors.grey.shade800,
-              fontWeight: FontWeight.bold),
+            fontSize: 18.0,
+            color: textColor,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
         backgroundColor: baseColor,
+        elevation: 0,
+        iconTheme: IconThemeData(color: textColor), // Adapts back button color
         leading: const BackButton(),
       ),
       body: SafeArea(
@@ -64,7 +75,7 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
               backgroundColor: baseColor,
               size: 80,
               child: CircularProgressIndicator(
-                color: Colors.grey.shade600,
+                color: secondaryTextColor,
               ),
             ),
           )
@@ -78,9 +89,10 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                   Text(
                     "Hello ${widget.firstName},",
                     style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.grey.shade800,
-                        fontWeight: FontWeight.bold),
+                      fontSize: 30,
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(
                     height: 6.0,
@@ -89,7 +101,7 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                     "We've sent a verification code to your number ${widget.phoneNumber}. Please enter the OTP below to verify your account.",
                     style: TextStyle(
                       fontSize: 15.0,
-                      color: Colors.grey.shade800,
+                      color: textColor,
                     ),
                   ),
                   const SizedBox(
@@ -98,49 +110,50 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                   Form(
                     key: formKey,
                     child: Pinput.builder(
-                        autofillHints: const [AutofillHints.oneTimeCode],
-                        autofocus: true,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        controller: controller,
-                        onCompleted: (pinS) {
-                          pin = pinS;
-                        },
-                        length: 6,
-                        validator: (val) {
-                          if (val!.isEmpty) {
-                            errorText = "OTP is required!";
-                          } else if (val.length < 6) {
-                            errorText = "OTP must be 6 digits!";
-                          } else {
-                            errorText = null;
-                          }
+                      autofillHints: const [AutofillHints.oneTimeCode],
+                      autofocus: true,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      controller: controller,
+                      onCompleted: (pinS) {
+                        pin = pinS;
+                      },
+                      length: 6,
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          errorText = "OTP is required!";
+                        } else if (val.length < 6) {
+                          errorText = "OTP must be 6 digits!";
+                        } else {
+                          errorText = null;
+                        }
 
-                          return null;
-                        },
-                        builder: (context, pin) {
-                          return Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly,
-                            children: [
-                              NeumorphicContainer(
-                                height: 45,
-                                width: 45,
-                                isPressed:
-                                pin.index < controller.text.length,
-                                backgroundColor: baseColor,
-                                child: Center(
-                                  child: Text(
-                                    pin.value,
-                                    style: TextStyle(
-                                        color: Colors.grey.shade800,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0),
+                        return null;
+                      },
+                      builder: (context, pinItem) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            NeumorphicContainer(
+                              height: 45,
+                              width: 45,
+                              isPressed:
+                              pinItem.index < controller.text.length,
+                              backgroundColor: baseColor,
+                              child: Center(
+                                child: Text(
+                                  pinItem.value,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
                                   ),
                                 ),
                               ),
-                            ],
-                          );
-                        }),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
@@ -148,7 +161,9 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                   Text(
                     errorText ?? "",
                     style: const TextStyle(
-                        color: Colors.red, fontSize: 15.0),
+                      color: Colors.red,
+                      fontSize: 15.0,
+                    ),
                   ),
                   const SizedBox(
                     height: 40,
@@ -198,7 +213,7 @@ class _VerifyOTPState extends ConsumerState<VerifyOTP> {
                           ),
                           child: Text(
                             "Verify",
-                            style: TextStyle(color: Colors.grey.shade800),
+                            style: TextStyle(color: textColor),
                           ),
                         ),
                       ),

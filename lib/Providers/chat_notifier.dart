@@ -30,7 +30,6 @@ class ChatNotifer extends _$ChatNotifer {
           .map((doc) => Message.fromMap(doc))
           .toList();
 
-
       final messagesById = <String, Message>{};
 
       for (final message in state) {
@@ -41,11 +40,13 @@ class ChatNotifer extends _$ChatNotifer {
         messagesById[message.messageId] = message;
       }
 
+      final mergedList = messagesById.values.toList();
 
-      state = messagesById.values.toList();
+      mergedList.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-      final currentUserId =
-          FirebaseAuth.instance.currentUser?.uid;
+      state = mergedList;
+
+      final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
       if (currentUserId != null) {
         await ref
