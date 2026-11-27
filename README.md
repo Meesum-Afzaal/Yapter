@@ -27,7 +27,7 @@
 
 ## About
 
-Yapter is a WhatsApp-inspired, cross-platform messaging application focused on real-time one-to-one communication. It combines phone number authentication, message encryption and decryption, live user presence, and a modern chat interface.
+Yapter is a WhatsApp-inspired, cross-platform messaging application focused on real-time one-to-one communication. It combines phone number authentication, message encryption and decryption, live user presence, and a modern chat interface with a neumorphic design.
 
 The app is written in Flutter and Dart. Firebase provides authentication and real-time data synchronization, while Riverpod manages application state and dependencies on the client.
 
@@ -61,7 +61,7 @@ The app is written in Flutter and Dart. Firebase provides authentication and rea
     <td width="50%" valign="top" align="left">
       <b>Security &amp; Experience</b><br>
       &bull; Message encryption and decryption<br>
-      &bull; WhatsApp-inspired user interface<br>
+      &bull; WhatsApp-inspired neumorphic interface<br>
       &bull; Reactive state management with Riverpod
     </td>
   </tr>
@@ -108,6 +108,7 @@ Riverpod's code-generation workflow is separate from the `flutter_riverpod` runt
 | **Typing indicators** | Typing activity is surfaced in real time within a conversation. |
 | **Read receipts** | Read receipts allow the sender to see when a message has been read. |
 | **Pagination** | Message loading is paginated, retrieving the latest 30 messages rather than an entire conversation history at once. |
+| **User interface** | The interface follows a WhatsApp-inspired messaging layout with a neumorphic visual style, built with Flutter. |
 | **State management** | Riverpod drives reactive state and dependency management, keeping the interface in step with incoming real-time data. |
 
 ## Security & Message Protection
