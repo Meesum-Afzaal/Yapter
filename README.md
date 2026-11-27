@@ -156,7 +156,3 @@ Developers are encouraged to:
 - Contribute fixes and enhancements
 
 When reporting a bug, the expected behavior, the actual behavior, and the steps to reproduce it make it much easier to investigate.
-
----
-
-<sub>Yapter is an independent project. It is not affiliated with, endorsed by, or sponsored by Meta, WhatsApp, Google, or Firebase. WhatsApp, Firebase, Flutter, Dart, and other product names are trademarks of their respective owners and are referenced only to describe the project's design inspiration and the technologies it uses.</sub>
